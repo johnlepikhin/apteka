@@ -1,7 +1,7 @@
 
 type entry = {
 	name : string;
-	expires : int * int; (* год, месяц *)
+	expires : int * int; (* месяц, год *)
 	usage : string;
 }
 
