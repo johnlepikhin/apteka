@@ -45,19 +45,33 @@ let doc content =
 
 " content
 
+(* Фильтр просроченных/отсутствующих *)
+let filter_expired (v, cnt) =
+	let (mon, year) = v.expires in
+	let year = year + 2000 in
+	let (nmon, nyear) =
+		let open Unix in
+		let t = localtime (time ()) in
+		t.tm_mon+1, t.tm_year+1900
+	in
+	cnt == 0 || (nyear >= year && nmon >= mon)
+
+let filter_null _ =
+	true
+
 (* Вывести в STDOUT обзорные таблицы *)
-let print_tables () =
-	List.map (fun (l, n) -> table n l) [(standard, "Стандартная"); (base, "Для БЛ"); (ha, "Высотная")]
+let print_tables filter =
+	List.map (fun (l, n) -> table n (List.filter filter l)) [(standard, "Стандартная"); (base, "Для БЛ"); (ha, "Высотная"); (sleepbag, "В спальном мешке"); (bad, "БАДы")]
 	|> String.concat "\n\n\n"
 	|> doc
 	|> print_endline
 
 (* Вывести в STDOUT стикеры *)
 let print_stickers () =
-	List.map stickers [standard; base; ha]
+	List.map stickers [standard; base; ha; sleepbag; bad]
 	|> String.concat "\n\n\n"
 	|> doc
 	|> print_endline
 
 let () =
-	print_tables ()
+	print_tables filter_expired
