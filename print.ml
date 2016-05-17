@@ -74,4 +74,7 @@ let print_stickers () =
 	|> print_endline
 
 let () =
-	print_tables filter_expired
+	print_tables filter_null
+	(*
+	print_stickers ()
+	*)
